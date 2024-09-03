@@ -1,0 +1,1 @@
+print("Glória a Deus!")

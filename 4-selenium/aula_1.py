@@ -5,6 +5,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import csv
+import pickle
 
 caminho_chromedriver = r"C:\Users\Michele\Downloads\chromedriver-win64\chromedriver.exe"
 
@@ -36,12 +37,25 @@ for index, url in enumerate(urls):
                         print(f"'Amazon' encontrado na página {index + 1}. Abrindo oferta da Amazon.")
 
                         oferta_link = item.find_element(By.CSS_SELECTOR, ".green_button").get_attribute("href")
-                        
+
                         driver.execute_script(f"window.open('{oferta_link}');")
                         driver.switch_to.window(driver.window_handles[-1]) 
                         
                         # Aguardar que a nova página da Amazon seja carregada
                         WebDriverWait(driver, 20).until(EC.url_contains("amazon"))
+
+                        # Carregar cookies salvos
+                        cookies = pickle.load(open("amazon_cookies.pkl", "rb"))
+
+                        # Remover o campo 'domain' de cada cookie antes de adicioná-los
+                        for cookie in cookies:
+                            if 'domain' in cookie:
+                                del cookie['domain']
+                            driver.add_cookie(cookie)
+                        
+                        # Recarregar a página da Amazon após os cookies serem inseridos para garantir que esteja logado
+                        driver.refresh()
+
                         
                         try:
                             # Extração de dados da página da Amazon com tempos de espera maiores

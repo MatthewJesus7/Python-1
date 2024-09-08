@@ -41,38 +41,42 @@ for index, url in enumerate(urls):
                     
                     # Aguardar que a nova página da Amazon seja carregada
                     WebDriverWait(driver, 20).until(EC.url_contains("amazon"))
-                    driver.get(driver.current_url)  # Certifique-se de que a URL foi carregada completamente
                     
                     try:
                         # Extração de dados da página da Amazon com tempos de espera maiores
-                        titles = WebDriverWait(driver, 20).until(
-                            EC.presence_of_all_elements_located((By.ID, 'productTitle'))
-                        )
-                        prices = WebDriverWait(driver, 20).until(
-                            EC.presence_of_all_elements_located((By.CLASS_NAME, 'best-offer-name'))
-                        )
-                        total_prices = WebDriverWait(driver, 20).until(
-                        EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'span.a-offscreen'))
-                        )
+                        title = WebDriverWait(driver, 20).until(
+                            EC.presence_of_element_located((By.ID, 'productTitle'))
+                        ).text
 
-                        # Verificar se o número de elementos extraídos é o mesmo
-                        num_items = min(len(titles), len(prices), len(total_prices))
+                        price = WebDriverWait(driver, 20).until(
+                            EC.presence_of_element_located((By.CLASS_NAME, 'best-offer-name'))
+                        ).text
+
+                        price_whole = WebDriverWait(driver, 20).until(
+                            EC.presence_of_element_located((By.CLASS_NAME, 'a-price-whole'))
+                        ).text
+                        
+                        price_fraction = WebDriverWait(driver, 20).until(
+                            EC.presence_of_element_located((By.CLASS_NAME, 'a-price-fraction'))
+                        ).text
+                        
+                        image_element = WebDriverWait(driver, 20).until(
+                            EC.presence_of_element_located((By.CSS_SELECTOR, 'li.imageThumbnail img'))
+                        )
+                        image_url = image_element.get_attribute('src')
+
+                        # Formar o preço completo
+                        total_price = f"R$ {price_whole},{price_fraction}"
 
                         # Armazenar os dados em uma lista de cartões
-                        for i in range(num_items):
-                            title = titles[i].text
-                            price = prices[i].text
-                            total_price = total_prices[i].text
-                            
-                            # Adicionar os dados como um dicionário à lista 'cards'
-                            cards.append({'title': title, 'price': price, 'total_price': total_price})
+                        cards.append({'title': title, 'price': price, 'total_price': total_price, 'image_url': image_url})
 
-                        print(f"Dados coletados da página {index + 1}: {cards}")
+                        print(f"Dados coletados da página {index + 1}: {cards[-1]}")
                         
                     except TimeoutException:
                         print(f"Timeout ao carregar elementos na página da Amazon (página {index + 1}).")
                     
-                    break  # Sair do loop quando encontrar a oferta da Amazon
+                    break
                     
             except NoSuchElementException:
                 print(f"Elemento não encontrado em um item na página {index + 1}, pulando item...")
@@ -86,7 +90,7 @@ for index, url in enumerate(urls):
 # Passo 5: Salvar todos os dados coletados em um arquivo CSV
 if cards:
     with open('data.csv', 'a', newline='', encoding='utf-8') as file:
-        writer = csv.DictWriter(file, fieldnames=['title', 'price', 'total_price'])
+        writer = csv.DictWriter(file, fieldnames=['title', 'price', 'image_url'])
         writer.writeheader()  # Escreve os cabeçalhos do CSV
         writer.writerows(cards)  # Escreve os dados no CSV
     print(f"Dados salvos no arquivo CSV: {cards}")

@@ -12,6 +12,17 @@ caminho_chromedriver = r"C:\Users\Michele\Downloads\chromedriver-win64\chromedri
 service = Service(executable_path=caminho_chromedriver)
 driver = webdriver.Chrome(service=service)
 
+# driver.get("https://www.amazon.com")
+
+# cookies = pickle.load(open("cookies/amazon_cookies.pkl", "rb"))
+
+# for cookie in cookies:
+#     if 'domain' in cookie:
+#         del cookie['domain']
+#     driver.add_cookie(cookie)
+
+# driver.refresh()
+
 driver.get("https://www.tudocelular.com/celulares/fichas-tecnicas.html?o=2")
 elementos_links = driver.find_elements(By.CSS_SELECTOR, ".pic")
 urls = [element.get_attribute("href") for element in elementos_links]
@@ -74,25 +85,7 @@ for index, url in enumerate(urls):
 
                         oferta_link = item.find_element(By.CSS_SELECTOR, ".green_button").get_attribute("href")
                         print("Abrindo oferta da amazon")
-
-                        # utilização dos cookies
-
-                        # driver.get("https://www.amazon.com")
-
-                        # cookies = pickle.load(open("amazon_cookies.pkl", "rb"))
-
-                        # for cookie in cookies:
-                        #     if 'domain' in cookie:
-                        #         del cookie['domain']
-                        #     driver.add_cookie(cookie)
-
-                        # driver.refresh()
-
-                        # WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "nav-link-accountList")))
-
-                        # print("Login mantido com sucesso usando cookies.")
                         
-
                         driver.execute_script(f"window.open('{oferta_link}');")
                         driver.switch_to.window(driver.window_handles[-1]) 
                         

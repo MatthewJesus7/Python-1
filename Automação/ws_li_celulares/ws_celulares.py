@@ -128,7 +128,8 @@ for index, url in enumerate(urls):
                             total_price = f"R$ {price_whole},{price_fraction}"
 
                             # Armazenar os dados em uma lista de cartões
-                            cards.append({'title': title,
+                            cards.append({'link': oferta_link, 
+                                          'title': title,
                                           'price': price,
                                           'total_price': total_price,
                                           'image_url': image_url,
@@ -159,10 +160,7 @@ for index, url in enumerate(urls):
             print(f"Erro na página {index + 1}: {e}")
 
 
-
-# Conjunto para armazenar títulos únicos e evitar duplicados
-
-# Salvar dados únicos em arquivo JSON
+# Salvar dados em arquivo JSON
 if cards:
     with open('data.json', 'w', encoding='utf-8') as file:
         json.dump(cards, file, ensure_ascii=False, indent=4)

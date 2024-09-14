@@ -1,1 +1,0 @@
-print("Glória a Deus!")

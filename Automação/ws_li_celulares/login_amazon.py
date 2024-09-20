@@ -7,13 +7,13 @@ service = Service(executable_path=caminho_chromedriver)
 
 driver = webdriver.Chrome(service=service)
 
-driver.get("https://www.amazon.com")
+driver.get("https://www.amazon.com.br")
 
 print("Faça login manualmente na Amazon...")
 
 input("Depois de fazer login manualmente, pressione Enter para continuar...")
 
 cookies = driver.get_cookies()
-pickle.dump(cookies, open("amazon_cookies.pkl", "wb"))
+pickle.dump(cookies, open("cookies/amazon_cookies.pkl", "wb"))
 print("Cookies salvos com sucesso.")
 

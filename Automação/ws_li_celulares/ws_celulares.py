@@ -12,20 +12,21 @@ caminho_chromedriver = r"C:\Users\Michele\Downloads\chromedriver-win64\chromedri
 service = Service(executable_path=caminho_chromedriver)
 driver = webdriver.Chrome(service=service)
 
-# driver.get("https://www.amazon.com")
+driver.get("https://www.amazon.com.br")
 
-# cookies = pickle.load(open("cookies/amazon_cookies.pkl", "rb"))
+cookies = pickle.load(open("cookies/amazon_cookies.pkl", "rb"))
 
-# for cookie in cookies:
-#     if 'domain' in cookie:
-#         del cookie['domain']
-#     driver.add_cookie(cookie)
+for cookie in cookies:
+    if 'domain' in cookie:
+        del cookie['domain']
+    driver.add_cookie(cookie)
 
-# driver.refresh()
+driver.refresh()
 
 driver.get("https://www.tudocelular.com/celulares/fichas-tecnicas.html?o=2")
 elementos_links = driver.find_elements(By.CSS_SELECTOR, ".pic")
 urls = [element.get_attribute("href") for element in elementos_links]
+
 
 cards = []
 
@@ -87,8 +88,17 @@ for index, url in enumerate(urls):
                         print("Abrindo oferta da amazon")
                         
                         driver.execute_script(f"window.open('{oferta_link}');")
-                        driver.switch_to.window(driver.window_handles[-1]) 
-                        
+                        driver.switch_to.window(driver.window_handles[-1])
+
+                        cookies = pickle.load(open("cookies/amazon_cookies.pkl", "rb"))
+
+                        for cookie in cookies:
+                            if 'domain' in cookie:
+                                del cookie['domain']
+                            driver.add_cookie(cookie)
+
+                        driver.refresh()
+       
                         # Aguardar que a nova página da Amazon seja carregada
                         WebDriverWait(driver, 20).until(EC.url_contains("amazon"))
 

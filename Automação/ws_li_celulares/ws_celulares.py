@@ -121,9 +121,13 @@ for index, url in enumerate(urls):
                             price_fraction = WebDriverWait(driver, 20).until(
                                 EC.presence_of_element_located((By.CLASS_NAME, 'a-price-fraction'))
                             ).text
+
+                            # div_of_image_element = WebDriverWait(driver, 20).until(
+                            #     EC.presence_of_element_located((By.CSS_SELECTOR, 'div#imgTagWrapperId'))
+                            # )
                             
                             image_element = WebDriverWait(driver, 20).until(
-                                EC.presence_of_element_located((By.CSS_SELECTOR, 'li.imageThumbnail img'))
+                                EC.presence_of_element_located((By.CSS_SELECTOR, 'img#landingImage'))
                             )
                             image_url = image_element.get_attribute('src')
 
